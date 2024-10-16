@@ -8,22 +8,16 @@ async function init() {
   let dataSelic;
 
   if (await selicFile.hasFile()) {
-    console.log("tem arquivo ====> ");
     const result = await selicFile.value();
 
     if (result.isValid) {
-      console.log("tem arquivo e e valido ====> ");
       return Promise.resolve(result.value);
     } else {
-      console.log("arquivo nao valido ====> ");
-
       dataSelic = await selic.getSelicRate();
       selicFile.create(dataSelic);
       return Promise.resolve(dataSelic);
     }
   } else {
-    console.log("nao tem arquivo ====> ");
-
     dataSelic = await selic.getSelicRate();
     selicFile.create(dataSelic);
     return Promise.resolve(dataSelic);
