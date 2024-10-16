@@ -4,8 +4,9 @@ const cartRouter = express.Router();
 const Installments = require("../Core/Installments");
 const Product = require("../Core/Product");
 const Payment = require("../Core/Payment");
+const SelicApi = require("../Api/Selic");
 
-cartRouter.post("/", (req, res) => {
+cartRouter.post("/", async (req, res) => {
   try {
     console.log(req.body.produto);
     const { produto, condicaoPagamento } = req.body;
@@ -38,26 +39,23 @@ cartRouter.post("/", (req, res) => {
       return console.error(pay.error);
     }
 
-    // calcular o valor das parcelas
-
-    const SELIC = 1.15;
     const { valor: valorProd } = produto;
     const { valorEntrada, qtdeParcelas } = condicaoPagamento;
 
     const valorParcelado = valorProd - valorEntrada;
     console.log(valorParcelado);
-    let result = Installments.list(valorParcelado, qtdeParcelas).map(
-      (v, index) => Installments.factoryDataInstallments(index + 1, v),
-    );
 
-    // valor da compra - valor entrada / qtdeParcelas
+    const SELIC = await SelicApi.init();
+    const parcelas = [];
 
-    // se valor de entrada for igual a valor de compra zerar desabilitqtdeParcelas
-
-    // se adicionar taxa selic acima de 6 parcelas
+    for (let parc = 1; parc <= qtdeParcelas; parc++) {
+      parcelas.push(Installments.calculate(valorParcelado, parc, SELIC));
+    }
 
     res.status(200).json({
-      parcelas: result,
+      parcelas: parcelas.map((v, i) =>
+        Installments.factoryDataInstallments(v, i + 1, SELIC),
+      ),
     });
   } catch (e) {
     console.log(e);

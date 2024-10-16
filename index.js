@@ -1,8 +1,7 @@
 const validate = require("./Utils/Validate");
-
 const ROUTERS = require("./Routers/index");
-
 const express = require("express");
+
 const App = express();
 
 App.use(express.json());
