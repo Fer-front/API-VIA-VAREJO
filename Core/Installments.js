@@ -1,30 +1,18 @@
-const TOTAL_WITHOUT_INTEREST = 6;
-const DECIMAL_FIXED = 2;
-const INTEREST = 1.15;
+const { INSTALLMENTS } = require("./Config");
+const { DECIMAL_FIXED, INTEREST, TOTAL_WITHOUT_INTEREST } = INSTALLMENTS;
 
 class Installments {
   static calculate(amount, qtd, tax = INTEREST) {
     return qtd > TOTAL_WITHOUT_INTEREST
-      ? ((amount + amount * tax) / qtd).toFixed(DECIMAL_FIXED)
+      ? ((amount + (amount * tax) / 100) / qtd).toFixed(DECIMAL_FIXED)
       : (amount / qtd).toFixed(DECIMAL_FIXED);
   }
 
-  static list(valorParcelado, qtdeParcelas) {
-    const result = [];
-
-    if (valorParcelado > 0) {
-      for (var parc = 1; parc <= qtdeParcelas; parc++) {
-        result.push(Installments.calculate(valorParcelado, qtdeParcelas));
-      }
-      return result;
-    }
-  }
-
-  static factoryDataInstallments(parc, amount) {
+  static factoryDataInstallments(amount, parc, tax) {
     return {
-      numeroParcela: parc,
       valor: amount,
-      taxaJurosAoMes: parc > TOTAL_WITHOUT_INTEREST ? INTEREST : 0,
+      numeroParcela: parc,
+      taxaJurosAoMes: parc > TOTAL_WITHOUT_INTEREST ? tax : 0,
     };
   }
 }
