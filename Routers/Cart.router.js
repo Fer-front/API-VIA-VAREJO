@@ -8,7 +8,6 @@ const SelicApi = require("../Api/Selic");
 
 cartRouter.post("/", async (req, res) => {
   try {
-    console.log(req.body.produto);
     const { produto, condicaoPagamento } = req.body;
     const prod = Product.validate(produto);
 
@@ -43,7 +42,6 @@ cartRouter.post("/", async (req, res) => {
     const { valorEntrada, qtdeParcelas } = condicaoPagamento;
 
     const valorParcelado = valorProd - valorEntrada;
-    console.log(valorParcelado);
 
     const SELIC = await SelicApi.init();
     const parcelas = [];
