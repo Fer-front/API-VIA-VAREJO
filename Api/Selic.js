@@ -1,27 +1,21 @@
 const selic = require("selic");
 const SelicFile = require("../Core/SelicFile");
-// verificar se possui json com dado da selic.
-// esse json deve ter o valor da taxa e dada de escrit.
+
 const selicFile = new SelicFile();
 
 async function init() {
-  let dataSelic;
+  const result = await selicFile.value();
+  const hasFile = await selicFile.hasFile();
 
-  if (await selicFile.hasFile()) {
-    const result = await selicFile.value();
-
-    if (result.isValid) {
-      return Promise.resolve(result.value);
-    } else {
-      dataSelic = await selic.getSelicRate();
-      selicFile.create(dataSelic);
-      return Promise.resolve(dataSelic);
-    }
-  } else {
-    dataSelic = await selic.getSelicRate();
+  if (!hasFile || !result.isValid) {
+    const dataSelic = await selic.getSelicRate();
     selicFile.create(dataSelic);
-    return Promise.resolve(dataSelic);
+
+    result.isValid = true;
+    result.value = dataSelic;
   }
+
+  return Promise.resolve(result.value);
 }
 
 module.exports = {

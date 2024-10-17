@@ -35,26 +35,24 @@ class SelicFile {
   }
 
   async value() {
-    const data = await readFileSync(this.fullPath, {
-      encoding: "utf8",
-      flag: "r",
-    });
+    try {
+      const data = await readFileSync(this.fullPath, {
+        encoding: "utf8",
+        flag: "r",
+      });
 
-    if (!data) {
-      console.log("Aquivo não encontrado");
+      const { created, value } = JSON.parse(data);
 
       return {
+        isValid: created === this.currentDate,
+        value,
+      };
+    } catch (err) {
+      return {
         isValid: false,
-        value: null,
+        value: "file not found!",
       };
     }
-
-    const { created, value } = JSON.parse(data);
-
-    return {
-      isValid: created === this.currentDate,
-      value,
-    };
   }
 }
 
