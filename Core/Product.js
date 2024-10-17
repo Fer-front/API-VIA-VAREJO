@@ -1,5 +1,4 @@
 const validate = require("../Utils/Validate");
-const Sanitizate = require("../Utils/Sanitizate");
 
 const { PRODUCT } = require("./Config");
 const { PROPS, MIN_MAX_CHAR_CODE, NAME } = PRODUCT;
