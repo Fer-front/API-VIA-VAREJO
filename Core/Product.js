@@ -7,29 +7,20 @@ class Product {
   constructor() {}
 
   static validate(prod) {
-    const hasProps = validate(prod).hasProps(PROPS).exec();
-    if (!hasProps.status) return hasProps.error;
+    try {
+      const hasProps = validate(prod).hasProps(PROPS).exec();
+      const isValidAmout = validate(prod.valor).isPositive().isMoney().exec();
+      const isValidCode = validate(prod.codigo)
+        .isPositive()
+        .minMaxChar(MIN_MAX_CHAR_CODE, MIN_MAX_CHAR_CODE)
+        .exec();
 
-    const isValidAmout = validate(prod.valor).isPositive().isMoney().exec();
-    const isValidCode = validate(prod.codigo)
-      .isPositive()
-      .minMaxChar(MIN_MAX_CHAR_CODE, MIN_MAX_CHAR_CODE)
-      .exec();
-
-    const isValidName = validate(prod.nome)
-      .minMaxChar(NAME.MIN_CHAR, NAME.MAX_CHAR)
-      .exec();
-
-    return !isValidCode.status || !isValidName.status || !isValidAmout.status
-      ? {
-          error: [
-            ...isValidCode.error,
-            ...isValidName.error,
-            ...isValidAmout.error,
-          ],
-          status: false,
-        }
-      : { error: [], status: true };
+      const isValidName = validate(prod.nome)
+        .minMaxChar(NAME.MIN_CHAR, NAME.MAX_CHAR)
+        .exec();
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 

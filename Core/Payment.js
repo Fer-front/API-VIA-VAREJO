@@ -7,26 +7,20 @@ class Payment {
   constructor() {}
 
   static validate(pay, totalSale) {
-    const hasProps = validate(pay).hasProps(PROPS).exec();
+    try {
+      const hasProps = validate(pay).hasProps(PROPS).exec();
+      const entrada = validate(pay.valorEntrada)
+        .isPositive()
+        .isMinorEqual(totalSale)
+        .exec();
 
-    if (!hasProps.status) return hasProps.error;
-
-    const entrada = validate(pay.valorEntrada)
-      .isPositive()
-      .isMinorEqual(totalSale)
-      .exec();
-
-    const parc = validate(pay.qtdeParcelas)
-      .isMajorEqual(INSTALLMENT.MIN)
-      .isMinorEqual(INSTALLMENT.MAX)
-      .exec();
-
-    return !entrada.status || !parc.status
-      ? {
-          error: [...entrada.error, ...parc.error],
-          status: false,
-        }
-      : { error: [], status: true };
+      const parc = validate(pay.qtdeParcelas)
+        .isMajorEqual(INSTALLMENT.MIN)
+        .isMinorEqual(INSTALLMENT.MAX)
+        .exec();
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 }
 
