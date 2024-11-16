@@ -8,7 +8,10 @@ class Payment {
 
   static validate(pay, totalSale) {
     try {
-      const hasProps = validate(pay).hasProps(PROPS).exec();
+      const hasProps = validate(pay)
+        .hasProps(PROPS)
+        .exec();
+        
       const entrada = validate(pay.valorEntrada)
         .isPositive()
         .isMinorEqual(totalSale)
@@ -18,6 +21,7 @@ class Payment {
         .isMajorEqual(INSTALLMENT.MIN)
         .isMinorEqual(INSTALLMENT.MAX)
         .exec();
+
     } catch (err) {
       throw new Error(err);
     }

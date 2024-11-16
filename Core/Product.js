@@ -8,8 +8,15 @@ class Product {
 
   static validate(prod) {
     try {
-      const hasProps = validate(prod).hasProps(PROPS).exec();
-      const isValidAmout = validate(prod.valor).isPositive().isMoney().exec();
+      const hasProps = validate(prod)
+        .hasProps(PROPS)
+        .exec();
+
+      const isValidAmout = validate(prod.valor)
+        .isPositive()
+        .isMoney()
+        .exec();
+
       const isValidCode = validate(prod.codigo)
         .isPositive()
         .minMaxChar(MIN_MAX_CHAR_CODE, MIN_MAX_CHAR_CODE)
@@ -18,6 +25,7 @@ class Product {
       const isValidName = validate(prod.nome)
         .minMaxChar(NAME.MIN_CHAR, NAME.MAX_CHAR)
         .exec();
+        
     } catch (err) {
       console.log(err);
     }
